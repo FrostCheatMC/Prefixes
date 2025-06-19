@@ -1,87 +1,141 @@
-# Prefixes Plugin
 
-This plugin is made by FrostCheatMC owner of AquaMC to publish it to the community
+---
 
-This plugin brings its own configurable chat format to display its prefix
+<p align="center">
+  <img src="https://img.shields.io/badge/plugin-Prefixes-blueviolet?style=for-the-badge">
+  <br><br>
+  <a href="https://paypal.me/FrostCheatMC?country.x=CO&locale.x=es_XC">
+    <img src="https://img.shields.io/badge/donate-paypal-ff69b4?style=for-the-badge&logo=paypal">
+  </a>
+  <a href="https://discord.gg/k8X7CG2kFv">
+    <img src="https://img.shields.io/discord/1384337463971020911?style=for-the-badge&logo=discord&logoColor=white">
+  </a>
+  <a href="https://poggit.pmmp.io/ci/FrostCheatMC/Prefixes/Prefixes">
+    <img src="https://poggit.pmmp.io/ci.shield/FrostCheatMC/Prefixes/Prefixes?style=for-the-badge">
+  </a>
+  <a href="https://poggit.pmmp.io/p/Prefixes">
+    <img src="https://poggit.pmmp.io/shield.downloads/Prefixes?style=for-the-badge">
+  </a>
+</p>
 
-This plugin brings support for RankSystem, if you want to show the prefix with RankSystem activate the integration in `config.yml`
+<h1 align="center">✨ Prefixes</h1>
+<p align="center">Customize and manage player prefixes with ease. Supports permissions, sessions, RankSystem integration, GUI menus, and more!</p>
 
-This plugin brings MultiLanguage Support
+---
 
-# What`s new v1.2.0
+## 💡 Features
 
-* Fixed bugs with commands, and GUI
-* Added MultiLanguage
-* Added Update Notifier (Poggit)
-* Added ConfigChecker Version
-* Show all prefixes in commands (PrefixArguments)
-* Show all languages supported in command (/prefix setlanguage)
+- ✅ Prefixes with color & formatting support
+- 🛡️ Permission-based access to prefixes
+- 🧠 Player session management
+- 📦 Full GUI interface with clickable prefix selection
+- 🧩 Integration with [RankSystem](https://github.com/Falkirks/RankSystem) for chat placeholders
+- 🌐 Multi-language support (EN, ES, FR, PT, etc.)
+- 🔁 Async saving for better performance
+- ⚡ Lightweight and optimized for PocketMine-MP
 
-# Configuration
-Don't touch this setting it may break the entire plugin
+---
 
-`config-version: 3`
+## 🛠️ Installation
 
-### Prefix Configuration
+1. 📥 [Download Prefixes from Poggit](https://poggit.pmmp.io/p/Prefixes)
+2. 🔌 Drag the `.phar` file into your server's `/plugins/` folder
+3. 🚀 Restart your server
+4. ✅ Use `/prefixes` in-game to open the menu
 
-`prefix-max-characters-name: 10`
+---
 
-`prefix-max-characters-format: 20`
+## 🌍 Supported Languages
 
-### Default Language
-Supported languages: `en_us`, `es_es`, `fr_fr`, `gr_ge`, `pr_br`, `rs_rs`
+Change the language via the config file.
 
-`default-language: en_us`
+Available languages:
+- 🇺🇸 English (`en_us`)
+- 🇪🇸 Español (`es_es`)
+- 🇫🇷 Français (`fr_fr`)
+- 🇵🇹 Português (`pr_br`)
+- 🇩🇪 Deutsch (`gr_gr`)
+- 🇷🇺 Русский (`rs_rs`)
 
-### RankSystem Integration
- If this option is "true" it means that you will use the RankSystem plugin to display the prefix. 
+Help us translate more in [`/resources/languages/`](resources/languages/)
 
- If this option is "false" it means that you will use the chat format of this Plugin.
+---
 
- If you change the RankSystem placeholder you must restart the server
+## 📚 Commands
 
- Remember that for it to work in the RankSystem configuration it must be between {}, example {prefix}
+| Command                                       | Description                                            | Permission                     |
+| --------------------------------------------- | ------------------------------------------------------ | ------------------------------ |
+| `/prefixes`                                   | Opens the prefix GUI menu                              | `prefixes.command`             |
+| `/prefix set <player> <prefix>`               | Assigns a prefix to a player manually                  | `prefixes.command.set`         |
+| `/prefix remove <player>`                     | Removes the prefix from a player                       | `prefixes.command.remove`      |
+| `/prefix delete <prefix>`                     | Deletes a prefix completely                            | `prefixes.command.delete`      |
+| `/prefix create <name> <format> <permission>` | Creates a new prefix with name, format, and permission | `prefixes.command.create`      |
+| `/prefix save`                                | Saves all prefix and session data manually             | `prefixes.command.save`        |
+| `/prefix reload`                              | Reloads config, prefixes, sessions, and language files | `prefixes.command.reload`      |
+| `/prefix setlanguage <language>`              | Sets the plugin's default language                     | `prefixes.command.setlanguage` |
+| `/prefix help`                                | Shows the list of available commands                   | `prefixes.command.help`        |
 
-`rank-system-chat: false`
+> 💡 You can also use `/prefixes` as the main command to open the GUI.
 
-`rank-system-prefix-placeholder: "prefix"`
+---
 
-### Plugin Chat Format
+## 🔌 RankSystem Integration
 
-`chat-format: "%prefix% &7%name%: &f%message%"`
+If [RankSystem](https://poggit.pmmp.io/p/RankSystem/) is installed and enabled in config, this plugin automatically registers a chat tag (e.g., `{prefix}`) to display the user's selected prefix in chat.
 
-# Commands
+Enable via config:
 
-- /prefixes - Shows you a GUI of all the prefixes created
-- /prefix set [string: playerName] [string: prefixName] - Set prefix a player
-- /prefix remove [string: playerName] - Remove the prefix from a player
-- /prefix delete [string: prefixName] - Delete a prefix
-- /prefix reload - Reload all plugin
-- /prefix save - Save all plugin
-- /prefix setlanguage - Sets the default language of plugin
-- /prefix create [string: prefixName] [string: format] [string: permission] - Create a prefix
-- /prefix help - Show this list of commands
+```yaml
+rank-system-chat: true
+rank-system-prefix-placeholder: "prefix"
+````
 
-# Permissions
+---
 
-- prefixes.command - default
-- prefixes.command.set - op
-- prefixes.command.remove - op
-- prefixes.command.delete - op
-- prefixes.command.reload - op
-- prefixes.command.create - op
-- prefixes.command.help - op
-- prefixes.command.save - op
-- prefixes.command.setlanguage - op
+## 🔄 Saving System
 
-# Features
+This plugin uses asynchronous tasks to save player sessions and prefixes without causing lag. All session and prefix data is stored in `plugin_data/Prefixes/`:
 
-- MultiLanguage Support (NEW)
-- Update Notifier (NEW)
-- Config Checker (NEW)
-- PrefixArguments All prefix shows in commands (NEW)
-- Shows you the prefixes in GUI
-- Click to place the prefix in the GUI (only if the player has the prefix permission)
-- 100% configurable language settings
-- RankSystem Support ({prefix} placeholder, or configure in `config.yml`)
-- Chat Format
+* `prefixes/` → each prefix config
+* `sessions/` → each player's selected prefix
+* `languages/` → translation files
+
+---
+
+## 📁 File Structure
+
+```
+plugin_data/
+└── Prefixes/
+    ├── prefixes/
+    │   └── <prefix>.yml
+    ├── sessions/
+    │   └── <uuid>.yml
+    ├── languages/
+    │   ├── en_us.yml
+    │   └── es_es.yml
+    └── config.yml
+```
+
+---
+
+## 📖 License
+
+This plugin is open source and licensed under the [MIT License](LICENSE).
+Feel free to fork, contribute, or open issues and pull requests.
+
+---
+
+## ☕ Support the Developer
+
+If you find this project useful, consider supporting me:
+
+> 💖 [Donate via PayPal](https://paypal.me/FrostCheatMC?country.x=CO&locale.x=es_XC)
+
+Any help is appreciated and motivates future updates!
+
+---
+
+<p align="center"><b>Made with ❤️ by FrostCheatMC</b></p>
+
+---
