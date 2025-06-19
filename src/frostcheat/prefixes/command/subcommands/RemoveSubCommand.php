@@ -2,9 +2,11 @@
 
 namespace frostcheat\prefixes\command\subcommands;
 
-use frostcheat\prefixes\libs\CortexPE\Commando\args\RawStringArgument;
-use frostcheat\prefixes\libs\CortexPE\Commando\BaseSubCommand;
+use CortexPE\Commando\args\RawStringArgument;
+use CortexPE\Commando\BaseSubCommand;
+
 use frostcheat\prefixes\Prefixes;
+
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\Server;
@@ -49,7 +51,7 @@ class RemoveSubCommand extends BaseSubCommand
             return;
         }
 
-        $session = Prefixes::getInstance()->getSessionManager()->getSession((string)$player->getUniqueId());
+        $session = Prefixes::getInstance()->getSessionManager()->getSession($player->getName());
         if ($session !== null) {
             if ($session->getPrefix() === null) {
                 $sender->sendMessage(TextFormat::colorize(str_replace(["%plugin-prefix%", "%player%"], [Prefixes::getInstance()->getProvider()->getMessages()->get("plugin-prefix"), $player->getName()], Prefixes::getInstance()->getProvider()->getMessages()->get("player-remove-player-no-prefix"))));

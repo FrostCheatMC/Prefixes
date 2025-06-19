@@ -4,9 +4,9 @@ namespace frostcheat\prefixes\command\args;
 
 use frostcheat\prefixes\language\Language;
 use frostcheat\prefixes\language\LanguageManager;
-use frostcheat\prefixes\libs\CortexPE\Commando\args\StringEnumArgument;
-use frostcheat\prefixes\prefix\Prefix;
-use frostcheat\prefixes\prefix\PrefixManager;
+
+use CortexPE\Commando\args\StringEnumArgument;
+
 use pocketmine\command\CommandSender;
 
 class LanguageArgument extends StringEnumArgument

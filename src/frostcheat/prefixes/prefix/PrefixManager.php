@@ -3,6 +3,7 @@
 namespace frostcheat\prefixes\prefix;
 
 use frostcheat\prefixes\Prefixes;
+
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\permission\Permission;
 use pocketmine\permission\PermissionManager;
@@ -16,21 +17,8 @@ class PrefixManager
 
     public function load(): void
     {
+        $this->prefixes = [];
         # Register prefixes
-        foreach (Prefixes::getInstance()->getProvider()->getPrefixes() as $name => $data) {
-            $this->createPrefix((string) $name, $data);
-            if ($data['permission'] !== null) {
-                $this->registerPermission($data['permission']);
-            }
-        }
-    }
-
-    public function reload(): void
-    {
-        foreach ($this->prefixes as $name => $data) {
-            unset($this->prefixes[$name]);
-        }
-
         foreach (Prefixes::getInstance()->getProvider()->getPrefixes() as $name => $data) {
             $this->createPrefix((string) $name, $data);
             if ($data['permission'] !== null) {
@@ -46,12 +34,12 @@ class PrefixManager
 
     public function getPrefix(string $name): ?Prefix
     {
-        return $this->prefixes[$name] ?? null;
+        return $this->prefixes[strtolower($name)] ?? null;
     }
 
     public function createPrefix(string $name, array $data): void
     {
-        $this->prefixes[strtolower($name)] = new Prefix($name, $data);
+        $this->prefixes[strtolower(strtolower($name))] = new Prefix(strtolower($name), $data);
     }
 
     public function registerPermission(string $permission): void {

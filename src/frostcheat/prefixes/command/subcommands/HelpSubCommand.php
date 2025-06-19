@@ -2,7 +2,7 @@
 
 namespace frostcheat\prefixes\command\subcommands;
 
-use frostcheat\prefixes\libs\CortexPE\Commando\BaseSubCommand;
+use CortexPE\Commando\BaseSubCommand;
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 
@@ -23,10 +23,7 @@ class HelpSubCommand extends BaseSubCommand
     /**
      * @inheritDoc
      */
-    protected function prepare(): void
-    {
-        // TODO: Implement prepare() method.
-    }
+    protected function prepare(): void {}
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {

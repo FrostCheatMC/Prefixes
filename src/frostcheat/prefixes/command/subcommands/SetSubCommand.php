@@ -2,9 +2,10 @@
 
 namespace frostcheat\prefixes\command\subcommands;
 
+use CortexPE\Commando\args\RawStringArgument;
+use CortexPE\Commando\BaseSubCommand;
+
 use frostcheat\prefixes\command\args\PrefixArgument;
-use frostcheat\prefixes\libs\CortexPE\Commando\args\RawStringArgument;
-use frostcheat\prefixes\libs\CortexPE\Commando\BaseSubCommand;
 use frostcheat\prefixes\prefix\Prefix;
 use frostcheat\prefixes\Prefixes;
 use pocketmine\command\CommandSender;
@@ -55,7 +56,7 @@ class SetSubCommand extends BaseSubCommand
             return;
         }
 
-        $session = Prefixes::getInstance()->getSessionManager()->getSession((string)$player->getUniqueId());
+        $session = Prefixes::getInstance()->getSessionManager()->getSession($player->getName());
         if ($session !== null) {
             $session->setPrefix($prefixName->getName());
             $sender->sendMessage(TextFormat::colorize(str_replace(["%prefix-name%", "%player%", "%plugin-prefix%"], [$prefixName->getName(), $player->getName(), Prefixes::getInstance()->getProvider()->getMessages()->get("plugin-prefix")], Prefixes::getInstance()->getProvider()->getMessages()->get("prefix-set-succesfuly"))));

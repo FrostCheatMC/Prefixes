@@ -4,6 +4,7 @@ namespace frostcheat\prefixes\language;
 
 use frostcheat\prefixes\Prefixes;
 use frostcheat\prefixes\provider\Provider;
+
 use pocketmine\utils\SingletonTrait;
 
 class LanguageManager
@@ -18,21 +19,11 @@ class LanguageManager
 
     public function load(): void
     {
+        $this->languages = [];
         foreach (Provider::getInstance()->getLanguages() as $name => $data) {
             $this->addLanguage($name, $data);
         }
         $this->default_language = Prefixes::getInstance()->getConfig()->get("default-language", "en_us");
-    }
-
-    public function reload(): void
-    {
-        foreach ($this->languages as $name => $data) {
-            unset($this->languages[$name]);
-        }
-
-        foreach (Prefixes::getInstance()->getProvider()->getLanguages() as $name => $data) {
-            $this->addLanguage($name, $data);
-        }
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace frostcheat\prefixes\command\subcommands;
 
-use frostcheat\prefixes\libs\CortexPE\Commando\BaseSubCommand;
+use CortexPE\Commando\BaseSubCommand;
+
 use frostcheat\prefixes\Prefixes;
+
 use pocketmine\command\CommandSender;
 use pocketmine\utils\TextFormat;
 

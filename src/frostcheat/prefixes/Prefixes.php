@@ -5,13 +5,17 @@ namespace frostcheat\prefixes;
 use frostcheat\prefixes\command\PrefixCommand;
 use frostcheat\prefixes\command\PrefixesCommand;
 use frostcheat\prefixes\language\LanguageManager;
-use frostcheat\prefixes\libs\CortexPE\Commando\PacketHooker;
-use frostcheat\prefixes\libs\JackMD\ConfigUpdater\ConfigUpdater;
-use frostcheat\prefixes\libs\JackMD\UpdateNotifier\UpdateNotifier;
-use frostcheat\prefixes\libs\muqsit\invmenu\InvMenuHandler;
 use frostcheat\prefixes\prefix\PrefixManager;
 use frostcheat\prefixes\provider\Provider;
 use frostcheat\prefixes\session\SessionManager;
+
+use CortexPE\Commando\PacketHooker;
+
+use JackMD\ConfigUpdater\ConfigUpdater;
+use JackMD\UpdateNotifier\UpdateNotifier;
+
+use muqsit\invmenu\InvMenuHandler;
+
 use pocketmine\event\Listener;
 use pocketmine\plugin\PluginBase;
 use pocketmine\scheduler\ClosureTask;
@@ -20,9 +24,7 @@ use pocketmine\utils\SingletonTrait;
 class Prefixes extends PluginBase
 {
     use SingletonTrait;
-    public const CONFIG_VERSION = 3;
-
-    private bool $charge = false;
+    public const CONFIG_VERSION = 4;
 
     protected function onLoad(): void
     {
@@ -112,20 +114,5 @@ class Prefixes extends PluginBase
     public function getLanguageManager(): LanguageManager
     {
         return LanguageManager::getInstance();
-    }
-
-    public function isCharge(): bool
-    {
-        return $this->charge;
-    }
-
-    public function setCharge(bool $charge): void
-    {
-        if ($charge) {
-            Prefixes::getInstance()->getScheduler()->scheduleDelayedTask(new ClosureTask(function (): void {
-                Prefixes::getInstance()->setCharge(false);
-            }), 200);
-        }
-        $this->charge = $charge;
     }
 }

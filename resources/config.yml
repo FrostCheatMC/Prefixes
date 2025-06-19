@@ -1,8 +1,8 @@
 # Don't touch this setting it may break the entire plugin
-config-version: 3
+config-version: 4
 
-prefix-max-characters-name: 10
-prefix-max-characters-format: 20
+prefix-max-characters-name: 25
+prefix-max-characters-format: 50
 
 # Default language used
 # Supported languages: en_us, es_es, fr_fr, gr_ge, pr_br, rs_rs
@@ -16,4 +16,5 @@ rank-system-chat: false
 rank-system-prefix-placeholder: "prefix"
 
 # Chat Format of this plugin (rank-system-chat must be "false")
-chat-format: "%prefix% &7%name%: &f%message%"
+chat-format-prefix: "%prefix% &7%name%: &f%message%"
+chat-format: "&7%name%: &f%message%"

@@ -3,6 +3,7 @@
 namespace frostcheat\prefixes\session;
 
 use frostcheat\prefixes\Prefixes;
+
 use pocketmine\player\Player;
 
 class Session
@@ -13,18 +14,12 @@ class Session
     private SessionChatFormatter $chatFormatter;
     private Player $player;
 
-    public function __construct(string $uuid, array $data)
+    public function __construct(string $name, array $data)
     {
-        $this->uuid = $uuid;
-        $this->name = $data["name"];
+        $this->name = $name;
         $this->prefix = $data["prefix"];
 
         $this->chatFormatter = new SessionChatFormatter($this);
-    }
-
-    public function getUuid(): string
-    {
-        return $this->uuid;
     }
 
     public function getName(): string
@@ -52,24 +47,22 @@ class Session
         return $this->chatFormatter;
     }
 
-    public function getPlayer(): Player
+    public function getPlayer(): ?Player
     {
-        return $this->player;
-    }
-
-    public function setPlayer(Player $player): void
-    {
-        $this->player = $player;
+        return Prefixes::getInstance()->getServer()->getPlayerExact($this->getName());
     }
 
     public function getChatFormat() : string {
-        return Prefixes::getInstance()->getConfig()->getNested("chat-format", "%prefix%%name%%message%");
+        if ($this->getPrefix() === null) {
+            return Prefixes::getInstance()->getConfig()->getNested("chat-format", "&7%name%: &f%message%");
+        } else {
+            return Prefixes::getInstance()->getConfig()->getNested("chat-format-prefix", "%prefix% &7%name%: &f%message%");
+        }
     }
 
     public function getData(): array
     {
         return [
-            'name' => $this->getName(),
             'prefix' => $this->getPrefix(),
         ];
     }

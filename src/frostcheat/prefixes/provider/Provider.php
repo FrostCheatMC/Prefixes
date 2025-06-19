@@ -6,100 +6,120 @@ use frostcheat\prefixes\language\LanguageManager;
 use frostcheat\prefixes\Prefixes;
 use pocketmine\utils\Config;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\scheduler\AsyncTask;
+use pocketmine\Server;
 
-class Provider
-{
+class Provider {
     use SingletonTrait;
 
     private Config $messages;
 
-    public function load(): void
-    {
-        if (!is_dir(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'prefixes'))
-            @mkdir(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'prefixes');
+    public function load(): void {
+        $dataFolder = Prefixes::getInstance()->getDataFolder();
 
-        if (!is_dir(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'sessions'))
-            @mkdir(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'sessions');
+        @mkdir($dataFolder . 'prefixes', 0777, true);
+        @mkdir($dataFolder . 'sessions', 0777, true);
 
         $this->saveResources();
     }
 
-    public function save(): void
-    {
-        $this->saveSessions();
-        $this->savePrefixes();
+    public function save(): void {
+        $this->saveSessionsAsync();
+        $this->savePrefixesAsync();
     }
 
-    public function reload(): void
-    {
+    public function reload(): void {
+        Prefixes::getInstance()->reloadConfig();
+        Prefixes::getInstance()->getPrefixManager()->load();
+        Prefixes::getInstance()->getLanguageManager()->load();
         $this->getMessages()->reload();
-        Prefixes::getInstance()->getConfig()->reload();
-        Prefixes::getInstance()->getPrefixManager()->reload();
-        Prefixes::getInstance()->getSessionManager()->reload();
-        Prefixes::getInstance()->getLanguageManager()->reload();
-        Prefixes::getInstance()->setCharge(true);
     }
 
-    public function saveResources(): void
-    {
-        Prefixes::getInstance()->saveDefaultConfig();
-        Prefixes::getInstance()->saveResource("gui.yml");
-        Prefixes::getInstance()->saveResource("languages/es_es.yml");
-        Prefixes::getInstance()->saveResource("languages/en_us.yml");
-        Prefixes::getInstance()->saveResource("languages/fr_fr.yml");
-        Prefixes::getInstance()->saveResource("languages/gr_gr.yml");
-        Prefixes::getInstance()->saveResource("languages/pr_br.yml");
-        Prefixes::getInstance()->saveResource("languages/rs_rs.yml");
+    public function saveResources(): void {
+        $plugin = Prefixes::getInstance();
+        $plugin->saveDefaultConfig();
+        $plugin->saveResource("gui.yml");
+
+        foreach (["es_es", "en_us", "fr_fr", "gr_gr", "pr_br", "rs_rs"] as $lang) {
+            $plugin->saveResource("languages/{$lang}.yml");
+        }
     }
 
-    public function getMessages(): Config
-    {
-        return new Config(Prefixes::getInstance()->getDataFolder() . "languages" . DIRECTORY_SEPARATOR . LanguageManager::getInstance()->getDefaultLanguage() . ".yml", Config::YAML);
+    public function getMessages(): Config {
+        $lang = LanguageManager::getInstance()->getDefaultLanguage();
+    
+        if (!in_array($lang, ["es_es", "en_us", "fr_fr", "gr_gr", "pr_br", "rs_rs"])) {
+            Prefixes::getInstance()->getLogger()->warning("Invalid language format in LanguageManager. Defaulting to en_us.");
+            $lang = "en_us";
+        }
+    
+        $path = Prefixes::getInstance()->getDataFolder() . "languages/" . $lang . ".yml";
+        return new Config($path, Config::YAML);
+    }
+    
+
+    public function getSessions(): array {
+        return $this->loadConfigsFromDirectory("sessions");
     }
 
-    public function getSessions(): array
-    {
-        $sessions = [];
-
-        foreach (glob(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR . '*.yml') as $file)
-            $sessions[basename($file, '.yml')] = (new Config(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR . basename($file), Config::YAML))->getAll();
-        return $sessions;
+    public function getPrefixes(): array {
+        return $this->loadConfigsFromDirectory("prefixes");
     }
 
-    public function getPrefixes(): array
-    {
+    public function getLanguages(): array {
+        return $this->loadConfigsFromDirectory("languages");
+    }
+
+    private function loadConfigsFromDirectory(string $directory): array {
+        $folder = Prefixes::getInstance()->getDataFolder() . $directory . DIRECTORY_SEPARATOR;
+        $data = [];
+
+        foreach (glob($folder . '*.yml') as $file) {
+            $data[basename($file, '.yml')] = (new Config($file, Config::YAML))->getAll();
+        }
+
+        return $data;
+    }
+
+    public function savePrefixesAsync(): void {
         $prefixes = [];
-
-        foreach (glob(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'prefixes' . DIRECTORY_SEPARATOR . '*.yml') as $file)
-            $prefixes[basename($file, '.yml')] = (new Config(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'prefixes' . DIRECTORY_SEPARATOR . basename($file), Config::YAML))->getAll();
-        return $prefixes;
-    }
-
-    public function getLanguages(): array
-    {
-        $languages = [];
-
-        foreach (glob(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . '*.yml') as $file)
-            $languages[basename($file, '.yml')] = (new Config(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'languages' . DIRECTORY_SEPARATOR . basename($file), Config::YAML))->getAll();
-        return $languages;
-    }
-
-    public function savePrefixes(): void
-    {
         foreach (Prefixes::getInstance()->getPrefixManager()->getPrefixes() as $name => $prefix) {
-            $config = new Config(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'prefixes' . DIRECTORY_SEPARATOR . $name . '.yml', Config::YAML);
-            $config->setAll($prefix->getData());
-            $config->save();
+            $prefixes[$name] = $prefix->getData();
         }
-    }
+    
+        Server::getInstance()->getAsyncPool()->submitTask(new class(serialize($prefixes), Prefixes::getInstance()->getDataFolder()) extends AsyncTask {
+            public function __construct(
+                private string $serializedPrefixes,
+                private string $dataFolder
+            ) {}
+    
+            public function onRun(): void {
+                $prefixes = unserialize($this->serializedPrefixes);
+                foreach ($prefixes as $name => $data) {
+                    yaml_emit_file($this->dataFolder . 'prefixes/' . $name . '.yml', $data);
+                }
+            }
+        });
+    }    
 
-    public function saveSessions(): void
-    {
-        foreach (Prefixes::getInstance()->getSessionManager()->getSessions() as $name => $sessions) {
-            $config = new Config(Prefixes::getInstance()->getDataFolder() . DIRECTORY_SEPARATOR . 'sessions' . DIRECTORY_SEPARATOR . $name . '.yml', Config::YAML);
-            $config->setAll($sessions->getData());
-            $config->save();
+    public function saveSessionsAsync(): void {
+        $sessions = [];
+        foreach (Prefixes::getInstance()->getSessionManager()->getSessions() as $name => $session) {
+            $sessions[$name] = $session->getData();
         }
-    }
-
+    
+        Server::getInstance()->getAsyncPool()->submitTask(new class(serialize($sessions), Prefixes::getInstance()->getDataFolder()) extends AsyncTask {
+            public function __construct(
+                private string $serializedSessions,
+                private string $dataFolder
+            ) {}
+    
+            public function onRun(): void {
+                $sessions = unserialize($this->serializedSessions);
+                foreach ($sessions as $name => $data) {
+                    yaml_emit_file($this->dataFolder . 'sessions/' . $name . '.yml', $data);
+                }
+            }
+        });
+    }    
 }

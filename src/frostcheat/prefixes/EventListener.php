@@ -11,25 +11,13 @@ use pocketmine\utils\TextFormat;
 
 class EventListener implements Listener
 {
-
-    public function handleJoin(PlayerJoinEvent $event): void
-    {
-        $player = $event->getPlayer();
-        if ($player instanceof Player) {
-            $session = Prefixes::getInstance()->getSessionManager()->getSession((string)$player->getUniqueId());
-            if ($session !== null) {
-                $session->setPlayer($player);
-            }
-        }
-    }
     public function handleLogin(PlayerLoginEvent $event): void
     {
         $player = $event->getPlayer();
-        $session = Prefixes::getInstance()->getSessionManager()->getSession((string)$player->getUniqueId());
+        $session = Prefixes::getInstance()->getSessionManager()->getSession($player->getName());
 
         if ($session === null) {
-            Prefixes::getInstance()->getSessionManager()->addSession((string)$player->getUniqueId(), [
-                "name" => $player->getName(),
+            Prefixes::getInstance()->getSessionManager()->addSession($player->getName(), [
                 "prefix" => null,
             ]);
         } else {
@@ -44,13 +32,7 @@ class EventListener implements Listener
         $player = $event->getPlayer();
         $message = $event->getMessage();
 
-        if (Prefixes::getInstance()->isCharge()) {
-            $player->sendMessage(TextFormat::colorize(str_replace("%plugin-prefix%", Prefixes::getInstance()->getProvider()->getMessages()->get("plugin-prefix"), Prefixes::getInstance()->getProvider()->getMessages()->get("plugin-reload"))));
-            $event->cancel();
-            return;
-        }
-
-        $session = Prefixes::getInstance()->getSessionManager()->getSession((string)$player->getUniqueId());
+        $session = Prefixes::getInstance()->getSessionManager()->getSession($player->getName());
         if ($session !== null) {
             if ((bool) Prefixes::getInstance()->getConfig()->getNested("rank-system-chat", false) === false) {
                 $event->setFormatter($session->getChatFormatter());

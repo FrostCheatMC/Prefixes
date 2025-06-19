@@ -10,8 +10,10 @@ use frostcheat\prefixes\command\subcommands\RemoveSubCommand;
 use frostcheat\prefixes\command\subcommands\SaveSubCommand;
 use frostcheat\prefixes\command\subcommands\SetLanguageSubCommand;
 use frostcheat\prefixes\command\subcommands\SetSubCommand;
-use frostcheat\prefixes\libs\CortexPE\Commando\BaseCommand;
 use frostcheat\prefixes\Prefixes;
+
+use CortexPE\Commando\BaseCommand;
+
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
 use pocketmine\utils\TextFormat;

@@ -2,9 +2,11 @@
 
 namespace frostcheat\prefixes\command\args;
 
-use frostcheat\prefixes\libs\CortexPE\Commando\args\StringEnumArgument;
+use CortexPE\Commando\args\StringEnumArgument;
+
 use frostcheat\prefixes\prefix\Prefix;
 use frostcheat\prefixes\prefix\PrefixManager;
+
 use pocketmine\command\CommandSender;
 
 final class PrefixArgument extends StringEnumArgument
