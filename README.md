@@ -10,8 +10,8 @@
   <a href="https://discord.gg/k8X7CG2kFv">
     <img src="https://img.shields.io/discord/1384337463971020911?style=for-the-badge&logo=discord&logoColor=white">
   </a>
-  <a href="https://poggit.pmmp.io/ci/FrostCheatMC/Prefixes/Prefixes">
-    <img src="https://poggit.pmmp.io/ci.shield/FrostCheatMC/Prefixes/Prefixes?style=for-the-badge">
+  <a href="https://poggit.pmmp.io/ci/FrostCheat/Prefixes/Prefixes">
+    <img src="https://poggit.pmmp.io/ci.shield/FrostCheat/Prefixes/Prefixes?style=for-the-badge">
   </a>
   <a href="https://poggit.pmmp.io/p/Prefixes">
     <img src="https://poggit.pmmp.io/shield.downloads/Prefixes?style=for-the-badge">
